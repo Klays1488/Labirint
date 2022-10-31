@@ -1,0 +1,76 @@
+/*
+ * Window.h
+ *
+ *  Created on: 27 окт. 2022 г.
+ *      Author: ∆идковƒя
+ */
+
+#ifndef WINDOW_H_
+#define WINDOW_H_
+
+#include <SDL2/SDL.h>
+#include <memory>
+#include <utility>
+#include "Map.h"
+#include "Player.h"
+#include "texture.h"
+
+class Window final {
+private:
+    static constexpr int CELL_SIZE = 8;
+    static constexpr int MAP_OFFSET = 5;
+    static constexpr int DOT_SIZE = 4;
+    static constexpr double WALK_DIST = 0.02;
+    static constexpr double TURN_ANGLE = 0.02;
+    static constexpr double WALL_HEIGHT = 0.5;
+    static constexpr double MOUSE_SENSITIVITY = 0.002;
+    static constexpr double FOV = 45.0;
+
+
+    std::shared_ptr<texture> _wall_tex;
+    std::shared_ptr<texture> _road_tex;
+    std::shared_ptr<texture> _sky_tex;
+
+    std::shared_ptr<Map> _map;
+    std::shared_ptr<Player> _player;
+
+    struct {
+        bool walk_fwd    {false};
+        bool walk_back 	 {false};
+        bool shift_left  {false};
+        bool shift_right {false};
+        bool turn_left   {false};
+        bool turn_right  {false};
+        bool tilt_up 	 {false};
+        bool tilt_down 	 {false};
+    } _controls;
+
+private:
+    int _width, _height;
+    std::shared_ptr<SDL_Window> _window;
+    std::shared_ptr<void> _gl_context;
+
+    void create_window();
+    void create_gl_context();
+    static void setup_gl();
+
+    void draw_minimap();
+    void set_perspective_mode() const;
+    void set_ortho_mode() const;
+    void draw_view();
+    void draw_hall(int my, int mx);
+    void draw_wall(int my, int mx);
+
+public:
+    Window(int w, int h);
+
+    void main_loop();
+    void render();
+    void event(const SDL_Event & e);
+    void update();
+};
+
+
+
+
+#endif /* WINDOW_H_ */
